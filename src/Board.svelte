@@ -29,7 +29,8 @@
  $: points = getStarPoints(n);
  let hoverPos;
  const hover = (x,y) => e => {
-     hoverPos = {x, y};
+     if (e.isPrimary)
+         hoverPos = {x, y};
  };
  const unhover = (x, y) => e => {
      setTimeout(() => {
@@ -37,6 +38,7 @@
              hoverPos = false;
      }, 0);
  }
+ const release = e => e.releasePointerCapture(e.pointerId);
 </script>
 
 <svg viewbox="0 0 {canvas} {canvas}"
@@ -59,7 +61,7 @@
             <rect x={border+x*gap-gap/2} y={border+y*gap-gap/2}
                   width={gap} height={gap}
                   fill="black" stroke="none" opacity="0"
-                  on:pointerenter="{hover(x,y)}" on:pointerout="{unhover(x,y)}" />
+                  on:pointerover="{hover(x,y)}" on:pointerleave="{unhover(x,y)}" />
         {/each}
     {/each}
 </svg>
@@ -69,5 +71,10 @@
      stroke: black;
      stroke-linecap: square;
      background: #dcb35c;
+     width: 100vmin;
+     height: 100vmin;
+ }
+ svg rect {
+     touch-action: none;
  }
 </style>

@@ -3,9 +3,7 @@
 </script>
 
 <div class="container">
-	<Board n={9} width="100vh" height="100vh" />
-	<Board n={13} width="100vh" height="100vh"  />
-	<Board width="100vh" height="100vh" />
+	<Board n={9} />
 </div>
 
 <style>
@@ -16,8 +14,6 @@
 	 display: flex;
 	 flex-direction: row;
 	 flex-wrap: wrap;
-	 overflow: auto;
-	 max-height: 100vh;
-	 max-width: 100vw;
+	 overflow: hidden;
  }
 </style>
