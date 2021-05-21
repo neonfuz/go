@@ -32,7 +32,10 @@
      hoverPos = {x, y};
  };
  const unhover = (x, y) => e => {
-     hoverPos = false;
+     setTimeout(() => {
+         if (hoverPos.x === x && hoverPos.y === y)
+             hoverPos = false;
+     }, 0);
  }
 </script>
 
@@ -46,19 +49,19 @@
     {#each points as [x,y]}
         <circle cx={border+x*gap} cy={border+y*gap} r=2 />
     {/each}
-    {#each new Array(n) as _, x}
-        {#each new Array(n) as _, y}
-            <rect x={border+x*gap-gap/2} y={border+y*gap-gap/2}
-                  width={gap} height={gap}
-                  fill="black" stroke="none" opacity="0"
-                  on:pointerenter={hover(x,y)} on:pointerout{unhover(x,y)} />
-        {/each}
-    {/each}
     {#if hoverPos}
         <circle
             cx={border+hoverPos.x*gap} cy={border+hoverPos.y*gap}
             r=6 fill={turn} stroke="none" opacity="0.5" />
     {/if}
+    {#each new Array(n) as _, x}
+        {#each new Array(n) as _, y}
+            <rect x={border+x*gap-gap/2} y={border+y*gap-gap/2}
+                  width={gap} height={gap}
+                  fill="black" stroke="none" opacity="0"
+                  on:pointerenter="{hover(x,y)}" on:pointerout="{unhover(x,y)}" />
+        {/each}
+    {/each}
 </svg>
 
 <style>
