@@ -11,15 +11,9 @@
      const edges = n > 13 && center;
      let points = [];
      // Corners
-     points.push([depth, depth]);
-     points.push([depth, n-1-depth]);
-     points.push([n-1-depth, depth]);
-     points.push([n-1-depth, n-1-depth]);
+     points.push([depth, depth], [depth, n-1-depth], [n-1-depth, depth], [n-1-depth, n-1-depth]);
      if (edges) {
-         points.push([edges, depth]);
-         points.push([n-1-depth, edges]);
-         points.push([edges, n-1-depth]);
-         points.push([depth, edges]);
+         points.push([edges, depth], [n-1-depth, edges], [edges, n-1-depth], [depth, edges]);
      }
      if (center) {
          points.push([center, center]);
@@ -27,18 +21,25 @@
      return points;
  }
  $: points = getStarPoints(n);
+ const getPos = (e, r) => ({
+     x: Math.floor((e.clientX - r.x) / r.width * n),
+     y: Math.floor((e.clientY - r.y) / r.height * n),
+ });
  let hoverPos;
- const hover = (x,y) => e => {
+ const hover = e => {
      if (e.isPrimary)
-         hoverPos = {x, y};
+         hoverPos = getPos(e, e.originalTarget.getBoundingClientRect());
  };
- const unhover = (x, y) => e => {
-     setTimeout(() => {
-         if (hoverPos.x === x && hoverPos.y === y)
-             hoverPos = false;
-     }, 0);
- }
- const release = e => e.releasePointerCapture(e.pointerId);
+ const unhover = e => {
+     hoverPos = false;
+ };
+ import {createEventDispatcher} from 'svelte';
+ const dispatch = createEventDispatcher();
+ const click = e => {
+     const pos = getPos(e, e.originalTarget.getBoundingClientRect());
+     alert(JSON.stringify(pos));
+     dispatch('place-piece', pos);
+ };
 </script>
 
 <svg viewbox="0 0 {canvas} {canvas}"
@@ -56,14 +57,13 @@
             cx={border+hoverPos.x*gap} cy={border+hoverPos.y*gap}
             r=6 fill={turn} stroke="none" opacity="0.5" />
     {/if}
-    {#each new Array(n) as _, x}
-        {#each new Array(n) as _, y}
-            <rect x={border+x*gap-gap/2} y={border+y*gap-gap/2}
-                  width={gap} height={gap}
-                  fill="black" stroke="none" opacity="0"
-                  on:pointerover="{hover(x,y)}" on:pointerleave="{unhover(x,y)}" />
-        {/each}
-    {/each}
+    <rect
+        x="{border-gap/2}" y="{border-gap/2}"
+        width="{gap*n}" height="{gap*n}"
+        stroke="none" opacity="0"
+        on:pointerover="{hover}" on:pointermove="{hover}" on:pointerleave="{unhover}"
+        on:pointerup="{click}"
+    />
 </svg>
 
 <style>
