@@ -28,3 +28,9 @@
 >
     <text></text>
 </rect>
+
+<style>
+ rect {
+     touch-action: none;
+ }
+</style>

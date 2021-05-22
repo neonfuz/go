@@ -59,7 +59,4 @@
      height: 100%;
      overflow: auto;
  }
- svg :global(rect) {
-     touch-action: none;
- }
 </style>
