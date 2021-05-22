@@ -8,12 +8,11 @@
  let pieces = [];
 
  function piecePlace(e) {
-     pieces = [...pieces, {
-         pos: e.detail,
-         turn,
-     }];
-     if (turn === 'white') turn = 'black';
-     else turn = 'white';
+     const pos = e.detail;
+     if(!pieces.find(elem => pos.x === elem.pos.x && pos.y === elem.pos.y)) {
+         pieces = [...pieces, { pos, turn }];
+         turn = (turn === 'white') ? 'black' : 'white';
+     }
  }
  function pieceHover(e) { hoverPos = e.detail; }
  function pieceUnhover(e) { hoverPos = null; }
