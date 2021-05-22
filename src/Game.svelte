@@ -7,10 +7,12 @@
  let hoverPos = null;
  let pieces = [];
 
+ $: pieces = new Array(n).fill().map(() => new Array(n).fill(null));
+
  function piecePlace(e) {
      const pos = e.detail;
-     if(!pieces.find(elem => pos.x === elem.pos.x && pos.y === elem.pos.y)) {
-         pieces = [...pieces, { pos, turn }];
+     if (!pieces[pos.y][pos.x]) {
+         pieces[pos.y][pos.x] = turn;
          turn = (turn === 'white') ? 'black' : 'white';
      }
  }
@@ -26,8 +28,12 @@
         on:piece-hover="{pieceHover}"
         on:piece-unhover="{pieceUnhover}"
     >
-        {#each pieces as piece}
-            <Piece {...piece} />
+        {#each pieces as row, y}
+            {#each row as turn, x}
+                {#if turn}
+                    <Piece pos={{x, y}} {turn} />
+                {/if}
+            {/each}
         {/each}
         {#if hoverPos}
             <Piece opacity=0.5 pos={hoverPos} {turn} />
