@@ -1,10 +1,11 @@
 <script>
- export let pos, fill, opacity;
+ export let pos, turn, opacity = 1;
 </script>
 
 <circle
-    r=0.5 stroke="none"
+    r=0.45 stroke="none"
     cx="{pos.x}"
     cy="{pos.y}"
-    {fill} {opacity}
+    fill="{turn}"
+    {opacity}
 />

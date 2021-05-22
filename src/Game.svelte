@@ -5,8 +5,16 @@
  export let n = 9, border = 10;
  let turn = 'white';
  let hoverPos = null;
+ let pieces = [];
 
- function piecePlace(e) { alert(JSON.stringify(e.detail)); }
+ function piecePlace(e) {
+     pieces = [...pieces, {
+         pos: e.detail,
+         turn,
+     }];
+     if (turn === 'white') turn = 'black';
+     else turn = 'white';
+ }
  function pieceHover(e) { hoverPos = e.detail; }
  function pieceUnhover(e) { hoverPos = null; }
 </script>
@@ -19,8 +27,11 @@
         on:piece-hover="{pieceHover}"
         on:piece-unhover="{pieceUnhover}"
     >
+        {#each pieces as piece}
+            <Piece {...piece} />
+        {/each}
         {#if hoverPos}
-            <Piece pos={hoverPos} fill="{turn}" opacity="0.5" />
+            <Piece opacity=0.5 pos={hoverPos} {turn} />
         {/if}
     </Board>
 
