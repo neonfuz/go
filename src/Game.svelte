@@ -5,16 +5,40 @@
  export let n = 9, border = 10;
  let turn = 'white';
  let hoverPos = null;
+ let moves = [];
  let pieces = [];
 
  $: pieces = new Array(n).fill().map(() => new Array(n).fill(null));
  $: opponent = turn === 'white' ? 'black' : 'white';
 
+ function groupMerge(a, x, y) {
+     if (typeof(pieces[y] && pieces[y][x]) != 'number')
+         return;
+     const b = moves[pieces[y][x]];
+     if (a.turn === b.turn) {
+         const swap = a.next;
+         a.next = b.next;
+         b.next = swap;
+     }
+ }
  function piecePlace(e) {
      const pos = e.detail;
      if (!pieces[pos.y][pos.x]) {
-         pieces[pos.y][pos.x] = turn;
-         turn = opponent;
+         let piece = {turn, pos};
+         pieces[pos.y][pos.x] = piece.next = moves.push(piece) - 1;
+         groupMerge(piece, pos.x-1, pos.y);
+         groupMerge(piece, pos.x,   pos.y-1);
+         groupMerge(piece, pos.x+1, pos.y);
+         groupMerge(piece, pos.x,   pos.y+1);
+//         turn = opponent;
+         moves=moves;
+     } else {
+         const start = moves[pieces[pos.y][pos.x]];
+         let ref = start;
+         do {
+             pieces[ref.pos.y][ref.pos.x] = null;
+             ref = moves[ref.next];
+         } while (ref != start);
      }
  }
  function pieceHover(e) { hoverPos = e.detail; }
@@ -29,10 +53,10 @@
         on:piece-hover="{pieceHover}"
         on:piece-unhover="{pieceUnhover}"
     >
-        {#each pieces as row, y}
-            {#each row as turn, x}
-                {#if turn}
-                    <Piece pos={{x, y}} {turn} />
+        {#each pieces as row}
+            {#each row as piece}
+                {#if moves[piece]}
+                    <Piece pos={moves[piece].pos} turn={moves[piece].turn} />
                 {/if}
             {/each}
         {/each}
@@ -40,8 +64,11 @@
             <Piece opacity=0.5 pos={hoverPos} {turn} />
         {/if}
     </Board>
-
 </svg>
+<pre>
+    {JSON.stringify(moves, null, 2)}
+</pre>
+
 
 <style>
  svg {
