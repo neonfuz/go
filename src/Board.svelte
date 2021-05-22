@@ -1,7 +1,6 @@
 <script>
  import ClickRect from './ClickRect.svelte';
  export let n = 19;
- export let turn = 'white';
  $: board = (n-1);
  function getStarPoints(n) {
      const depth = n >= 13 ? 3 : 2;
