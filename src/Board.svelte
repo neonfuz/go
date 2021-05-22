@@ -1,23 +1,30 @@
 <script>
  import ClickRect from './ClickRect.svelte';
  export let n = 19;
- export let border = n;
  export let gap = 15;
  export let turn = 'white';
  $: board = (n-1)*gap;
- $: canvas = board+border*2;
  function getStarPoints(n) {
      const depth = n >= 13 ? 3 : 2;
-     const center = n % 2 && Math.floor(n/2);
-     const edges = n > 13 && center;
-     let points = [];
-     // Corners
-     points.push([depth, depth], [depth, n-1-depth], [n-1-depth, depth], [n-1-depth, n-1-depth]);
-     if (edges) {
-         points.push([edges, depth], [n-1-depth, edges], [edges, n-1-depth], [depth, edges]);
-     }
-     if (center) {
+     let points = [
+         // Corners
+         [depth, depth],
+         [depth, n-1-depth],
+         [n-1-depth, depth],
+         [n-1-depth, n-1-depth]
+     ];
+     if (n % 2) {
+         const center = Math.floor(n/2);
          points.push([center, center]);
+         if (n > 13) {
+             points.push(
+                 // edges
+                 [center, depth],
+                 [n-1-depth, center],
+                 [center, n-1-depth],
+                 [depth, center]
+             );
+         }
      }
      return points;
  }
@@ -26,36 +33,23 @@
      x: Math.floor((e.clientX - r.x) / r.width * n),
      y: Math.floor((e.clientY - r.y) / r.height * n),
  });
- let hoverPos;
 </script>
 
-<svg viewbox="0 0 {canvas} {canvas}" {...$$props}
+<svg viewbox="0 0 {board} {board}" {...$$props}
      xmlns="http://www.w3.org/2000/svg" version="1.1">
     {#each new Array(n) as _, i}
-        <path d="M {border} {border+gap*i} H {board+border}"/>
-        <path d="M {border+gap*i} {border} V {board+border}"/>
+        <path d="M 0 {gap*i} H {board}"/>
+        <path d="M {gap*i} 0 V {board}"/>
     {/each}
     {#each points as [x,y]}
-        <circle cx="{border+x*gap}" cy="{border+y*gap}" r=2 />
+        <circle cx="{x*gap}" cy="{y*gap}" r=2 />
     {/each}
-    {#if hoverPos}
-        <circle
-            cx="{border+hoverPos.x*gap}" cy="{border+hoverPos.y*gap}"
-            r=6 fill="{turn}" stroke="none" opacity="0.5" />
-    {/if}
-    <ClickRect
-        bind:hoverPos
-        x="{border-gap/2}" y="{border-gap/2}"
-        width="{gap*n}" height="{gap*n}"
-        {n}
-    />
 </svg>
 
 <style>
  svg {
      stroke: black;
      stroke-linecap: square;
-     background: #dcb35c;
      width: 100%;
      height: 100%;
  }
