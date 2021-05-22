@@ -7,14 +7,25 @@
  let hoverPos = null;
  let moves = [];
  let pieces = [];
+ let toggleTurns = true;
 
  $: pieces = new Array(n).fill().map(() => new Array(n).fill(null));
  $: opponent = turn === 'white' ? 'black' : 'white';
 
+ function* loopover(item) {
+     const start = item;
+     do {
+         yield item;
+         item = moves[item.next];
+     } while (item !== start);
+ }
  function groupMerge(a, x, y) {
      if (typeof(pieces[y] && pieces[y][x]) != 'number')
          return;
      const b = moves[pieces[y][x]];
+     for (const item of loopover(a))
+         if (item === b)
+             return;
      if (a.turn === b.turn) {
          const swap = a.next;
          a.next = b.next;
@@ -30,7 +41,8 @@
          groupMerge(piece, pos.x,   pos.y-1);
          groupMerge(piece, pos.x+1, pos.y);
          groupMerge(piece, pos.x,   pos.y+1);
-//         turn = opponent;
+         if (toggleTurns)
+             turn = opponent;
          moves=moves;
      } else {
          const start = moves[pieces[pos.y][pos.x]];
@@ -65,10 +77,15 @@
         {/if}
     </Board>
 </svg>
+<label>
+    Toggle turns:
+    <input type="checkbox" bind:checked="{toggleTurns}" name="toggleTurns" />
+</label>
 <pre>
-    {JSON.stringify(moves, null, 2)}
+{#each moves as move, i}
+    i: {JSON.stringify(move)}{'\n'}
+{/each}
 </pre>
-
 
 <style>
  svg {
