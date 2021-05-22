@@ -1,9 +1,9 @@
 <script>
- import Board from './Board.svelte';
+ import Game from './Game.svelte';
 </script>
 
 <div class="container">
-	<Board n={9} />
+	<Game />
 </div>
 
 <style>
@@ -15,5 +15,9 @@
 	 flex-direction: row;
 	 flex-wrap: wrap;
 	 overflow: hidden;
+ }
+ .container :global(svg) {
+     width: 100vmin;
+     height: 100vmin;
  }
 </style>

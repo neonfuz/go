@@ -1,4 +1,5 @@
 <script>
+ import ClickRect from './ClickRect.svelte';
  export let n = 19;
  export let border = n;
  export let gap = 15;
@@ -26,43 +27,27 @@
      y: Math.floor((e.clientY - r.y) / r.height * n),
  });
  let hoverPos;
- const hover = e => {
-     if (e.isPrimary)
-         hoverPos = getPos(e, e.originalTarget.getBoundingClientRect());
- };
- const unhover = e => {
-     hoverPos = false;
- };
- import {createEventDispatcher} from 'svelte';
- const dispatch = createEventDispatcher();
- const click = e => {
-     const pos = getPos(e, e.originalTarget.getBoundingClientRect());
-     alert(JSON.stringify(pos));
-     dispatch('place-piece', pos);
- };
 </script>
 
-<svg viewbox="0 0 {canvas} {canvas}"
-     {...$$props}
+<svg viewbox="0 0 {canvas} {canvas}" {...$$props}
      xmlns="http://www.w3.org/2000/svg" version="1.1">
-    {#each new Array(n) as n, i}
+    {#each new Array(n) as _, i}
         <path d="M {border} {border+gap*i} H {board+border}"/>
         <path d="M {border+gap*i} {border} V {board+border}"/>
     {/each}
     {#each points as [x,y]}
-        <circle cx={border+x*gap} cy={border+y*gap} r=2 />
+        <circle cx="{border+x*gap}" cy="{border+y*gap}" r=2 />
     {/each}
     {#if hoverPos}
         <circle
-            cx={border+hoverPos.x*gap} cy={border+hoverPos.y*gap}
-            r=6 fill={turn} stroke="none" opacity="0.5" />
+            cx="{border+hoverPos.x*gap}" cy="{border+hoverPos.y*gap}"
+            r=6 fill="{turn}" stroke="none" opacity="0.5" />
     {/if}
-    <rect
+    <ClickRect
+        bind:hoverPos
         x="{border-gap/2}" y="{border-gap/2}"
         width="{gap*n}" height="{gap*n}"
-        stroke="none" opacity="0"
-        on:pointerover="{hover}" on:pointermove="{hover}" on:pointerleave="{unhover}"
-        on:pointerup="{click}"
+        {n}
     />
 </svg>
 
@@ -71,10 +56,10 @@
      stroke: black;
      stroke-linecap: square;
      background: #dcb35c;
-     width: 100vmin;
-     height: 100vmin;
+     width: 100%;
+     height: 100%;
  }
- svg rect {
+ svg :global(rect) {
      touch-action: none;
  }
 </style>
