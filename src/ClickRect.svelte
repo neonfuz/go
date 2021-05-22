@@ -2,24 +2,23 @@
  import {createEventDispatcher} from 'svelte';
  const dispatch = createEventDispatcher();
 
- export let x, y, width, height, n, hoverPos;
+ export let x, y, width, height, n;
 
  const getPos = (e, r) => ({
      x: Math.floor((e.clientX - r.x) / r.width * n),
      y: Math.floor((e.clientY - r.y) / r.height * n),
  });
- const hover = e => {
-     if (e.isPrimary)
-         hoverPos = getPos(e, e.originalTarget.getBoundingClientRect());
- };
- const unhover = e => {
-     hoverPos = false;
- };
- const click = e => {
-     const pos = getPos(e, e.originalTarget.getBoundingClientRect());
-     alert(JSON.stringify(pos));
-     dispatch('place-piece', pos);
- };
+ const hover = e =>
+     e.isPrimary && dispatch(
+         'piece-hover',
+         getPos(e, e.originalTarget.getBoundingClientRect())
+     );
+ const unhover = e => dispatch('piece-unhover');
+ const click = e =>
+     dispatch(
+         'piece-place',
+         getPos(e, e.originalTarget.getBoundingClientRect())
+     );
 </script>
 
 <rect
