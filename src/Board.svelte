@@ -1,9 +1,8 @@
 <script>
  import ClickRect from './ClickRect.svelte';
  export let n = 19;
- export let gap = 15;
  export let turn = 'white';
- $: board = (n-1)*gap;
+ $: board = (n-1);
  function getStarPoints(n) {
      const depth = n >= 13 ? 3 : 2;
      let points = [
@@ -38,11 +37,11 @@
 <svg viewbox="0 0 {board} {board}" {...$$props}
      xmlns="http://www.w3.org/2000/svg" version="1.1">
     {#each new Array(n) as _, i}
-        <path d="M 0 {gap*i} H {board}"/>
-        <path d="M {gap*i} 0 V {board}"/>
+        <path d="M 0 {i} H {board}"/>
+        <path d="M {i} 0 V {board}"/>
     {/each}
     {#each points as [x,y]}
-        <circle cx="{x*gap}" cy="{y*gap}" r=2 />
+        <circle cx="{x}" cy="{y}" r=0.13 />
     {/each}
 </svg>
 
@@ -50,8 +49,10 @@
  svg {
      stroke: black;
      stroke-linecap: square;
+     stroke-width: 0.07;
      width: 100%;
      height: 100%;
+     overflow: auto;
  }
  svg :global(rect) {
      touch-action: none;
