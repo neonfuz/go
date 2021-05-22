@@ -1,32 +1,29 @@
 <script>
  import Board from './Board.svelte';
- import ClickRect from './ClickRect.svelte';
+ import Piece from './Piece.svelte';
 
- export let n = 19;
+ export let n = 9, border = 10;
  let turn = 'white';
- let hoverPos = {x: 2, y: 2};
+ let hoverPos = null;
 
- function piecePlace(e) {
-     alert(e.detail);
- }
- function pieceHover(e) {
-     hoverPos = e.detail;
- }
-
- $: gap = 100/(n-1);
+ function piecePlace(e) { alert(JSON.stringify(e.detail)); }
+ function pieceHover(e) { hoverPos = e.detail; }
+ function pieceUnhover(e) { hoverPos = null; }
 </script>
 
-<svg viewbox="0 0 100 100" {...$$props}
+<svg viewbox="0 0 {100+border*2} {100+border*2}" {...$$props}
      xmlns="http://www.w3.org/2000/svg" version="1.1">
-    <Board {n} />
-    {#if hoverPos}
-        <circle
-            cx="{hoverPos.x*gap}" cy="{hoverPos.y*gap}"
-            r="{50/n}" fill="{turn}" stroke="none" opacity="0.5" />
-    {/if}
-    <ClickRect {n}
-        x="{0}" y="{0}" width="{100}" height="{100}"
-        on:piece-place="{piecePlace}" on:piece-hover={pieceHover} />
+    <Board
+        {n} x={border} y={border} width=100 height=100
+        on:piece-place="{piecePlace}"
+        on:piece-hover="{pieceHover}"
+        on:piece-unhover="{pieceUnhover}"
+    >
+        {#if hoverPos}
+            <Piece pos={hoverPos} fill="{turn}" opacity="0.5" />
+        {/if}
+    </Board>
+
 </svg>
 
 <style>

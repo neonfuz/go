@@ -43,6 +43,11 @@
     {#each points as [x,y]}
         <circle cx="{x}" cy="{y}" r=0.13 />
     {/each}
+    <slot />
+    <ClickRect
+        {n} x=-0.5 y=-0.5 width="{n}" height="{n}"
+        on:piece-place on:piece-hover on:piece-unhover
+    />
 </svg>
 
 <style>
