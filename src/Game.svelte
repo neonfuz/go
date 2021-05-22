@@ -8,12 +8,13 @@
  let pieces = [];
 
  $: pieces = new Array(n).fill().map(() => new Array(n).fill(null));
+ $: opponent = turn === 'white' ? 'black' : 'white';
 
  function piecePlace(e) {
      const pos = e.detail;
      if (!pieces[pos.y][pos.x]) {
          pieces[pos.y][pos.x] = turn;
-         turn = (turn === 'white') ? 'black' : 'white';
+         turn = opponent;
      }
  }
  function pieceHover(e) { hoverPos = e.detail; }
