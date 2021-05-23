@@ -2,75 +2,78 @@
  import Board from './Board.svelte';
  import Piece from './Piece.svelte';
 
- export let n = 9, border = 10, toggleTurns = true;;
+ export let n = 9, border = 10, toggleTurns = true;
  let turn = 'white';
- let hoverPos = null;
  let moves = [];
- let pieces = [];
+ let board = [];
 
- $: pieces = new Array(n).fill().map(() => new Array(n).fill(null));
+ $: board = new Array(n).fill().map(() => new Array(n).fill(null));
  $: opponent = turn === 'white' ? 'black' : 'white';
 
- function* loopover(item) {
+ const getPiece = (x, y) => board[y] && board[y][x];
+ // iterate over piece group
+ function* overGroup(item) {
      const start = item;
      do {
          yield item;
          item = moves[item.next];
      } while (item !== start);
  }
- function groupMerge(a, x, y) {
-     if (typeof(pieces[y] && pieces[y][x]) != 'number')
-         return;
-     const b = moves[pieces[y][x]];
-     for (const item of loopover(a))
+ // iterate over piece neighbors
+ function* overNeighbors(piece) {
+     const {pos: {x, y}} = piece;
+     yield getPiece(x-1, y);
+     yield getPiece(x+1, y);
+     yield getPiece(x, y-1);
+     yield getPiece(x, y+1);
+ }
+
+ function mergeGroup(a, b) {
+     // make sure b is not already in a's group
+     for (const item of overGroup(a))
          if (item === b)
              return;
+     // merge a and b
      if (a.turn === b.turn) {
          const swap = a.next;
          a.next = b.next;
          b.next = swap;
      }
  }
- function removeIfDead(piece) {
+ function removeIfDead(target) {
      // return if group is alive
-     for (const {pos: {x, y}} of loopover(piece)) {
-         if (pieces[y-1] && pieces[y-1][x] === null) return;
-         if (pieces[y+1] && pieces[y+1][x] === null) return;
-         if (pieces[y][x-1] === null) return;
-         if (pieces[y][x+1] === null) return;
-     }
+     for (const move of overGroup(target))
+         for (const neighbor of overNeighbors(move))
+             if (neighbor === null)
+                 return;
      // group is dead, remove it
-     for (const {pos: {x, y}} of loopover(piece))
-         pieces[y][x] = null;
- }
- function attack(x, y) {
-     const idx = pieces[y] && pieces[y][x];
-     if (typeof idx !== 'number')
-         return;
-     const piece = moves[idx];
-     if (piece.turn !== opponent)
-         return;
-     removeIfDead(piece);
+     for (const {pos: {x, y}} of overGroup(target))
+         board[y][x] = null;
  }
  function piecePlace(e) {
      const {x, y} = e.detail;
-     if (pieces[y] && pieces[y][x] === null) {
+     // check that spot is open
+     if (getPiece(x, y) === null) {
+         // construct piece
          let piece = {turn, pos: {x, y}};
-         pieces[y][x] = piece.next = moves.push(piece) - 1;
-         groupMerge(piece, x-1, y);
-         groupMerge(piece, x+1, y);
-         groupMerge(piece, x, y-1);
-         groupMerge(piece, x, y+1);
-         attack(x-1, y);
-         attack(x+1, y);
-         attack(x, y+1);
-         attack(x, y-1);
+         // place piece and set group pointer to self
+         board[y][x] = piece.next = moves.push(piece) - 1;
+         for (let neighbor of overNeighbors(piece)) {
+             if (typeof neighbor !== 'number') continue;
+             neighbor = moves[neighbor];
+             switch (neighbor.turn) {
+                 case turn: mergeGroup(piece, neighbor); break;
+                 case opponent: removeIfDead(neighbor); break;
+                 default: alert('unreachable!'); break;
+             }
+         }
          if (toggleTurns)
              turn = opponent;
      }
  }
+ let hoverPos = null;
  function pieceHover(e) { hoverPos = e.detail; }
- function pieceUnhover(e) { hoverPos = null; }
+ function pieceUnhover() { hoverPos = null; }
 </script>
 
 <svg viewbox="0 0 {100+border*2} {100+border*2}" {...$$props}
@@ -81,7 +84,7 @@
         on:piece-hover="{pieceHover}"
         on:piece-unhover="{pieceUnhover}"
     >
-        {#each pieces as row}
+        {#each board as row}
             {#each row as piece}
                 {#if moves[piece]}
                     <Piece pos={moves[piece].pos} turn={moves[piece].turn} />

@@ -27,10 +27,6 @@
      return points;
  }
  $: points = getStarPoints(n);
- const getPos = (e, r) => ({
-     x: Math.floor((e.clientX - r.x) / r.width * n),
-     y: Math.floor((e.clientY - r.y) / r.height * n),
- });
 </script>
 
 <svg viewbox="0 0 {board} {board}" {...$$props}
