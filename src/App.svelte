@@ -1,13 +1,13 @@
 <script>
- import Game from './Game.svelte';
+ import Game from './lib/Game.svelte';
 </script>
 
 <div class="container">
-	<Game />
+    <Game />
 </div>
 
 <style>
  :global(body) {
-	 overflow: hidden;
+     overflow: hidden;
  }
 </style>
