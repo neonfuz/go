@@ -31,25 +31,42 @@
          b.next = swap;
      }
  }
+ function removeIfDead(piece) {
+     // return if group is alive
+     for (const {pos: {x, y}} of loopover(piece)) {
+         if (pieces[y-1] && pieces[y-1][x] === null) return;
+         if (pieces[y+1] && pieces[y+1][x] === null) return;
+         if (pieces[y][x-1] === null) return;
+         if (pieces[y][x+1] === null) return;
+     }
+     // group is dead, remove it
+     for (const {pos: {x, y}} of loopover(piece))
+         pieces[y][x] = null;
+ }
+ function attack(x, y) {
+     const idx = pieces[y] && pieces[y][x];
+     if (typeof idx !== 'number')
+         return;
+     const piece = moves[idx];
+     if (piece.turn !== opponent)
+         return;
+     removeIfDead(piece);
+ }
  function piecePlace(e) {
-     const pos = e.detail;
-     if (!pieces[pos.y][pos.x]) {
-         let piece = {turn, pos};
-         pieces[pos.y][pos.x] = piece.next = moves.push(piece) - 1;
-         groupMerge(piece, pos.x-1, pos.y);
-         groupMerge(piece, pos.x,   pos.y-1);
-         groupMerge(piece, pos.x+1, pos.y);
-         groupMerge(piece, pos.x,   pos.y+1);
+     const {x, y} = e.detail;
+     if (!pieces[y][x]) {
+         let piece = {turn, pos: {x, y}};
+         pieces[y][x] = piece.next = moves.push(piece) - 1;
+         groupMerge(piece, x-1, y);
+         groupMerge(piece, x+1, y);
+         groupMerge(piece, x, y-1);
+         groupMerge(piece, x, y+1);
+         attack(x-1, y);
+         attack(x+1, y);
+         attack(x, y+1);
+         attack(x, y-1);
          if (toggleTurns)
              turn = opponent;
-         moves=moves;
-     } else {
-         const start = moves[pieces[pos.y][pos.x]];
-         let ref = start;
-         do {
-             pieces[ref.pos.y][ref.pos.x] = null;
-             ref = moves[ref.next];
-         } while (ref != start);
      }
  }
  function pieceHover(e) { hoverPos = e.detail; }
