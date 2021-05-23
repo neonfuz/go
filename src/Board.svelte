@@ -1,5 +1,5 @@
 <script>
- import ClickRect from './ClickRect.svelte';
+ import mousepos from './mousepos.js';
  export let n = 19;
  $: board = (n-1);
  function getStarPoints(n) {
@@ -43,9 +43,9 @@
         <circle cx="{x}" cy="{y}" r=0.13 />
     {/each}
     <slot />
-    <ClickRect
-        {n} x=-0.5 y=-0.5 width="{n}" height="{n}"
-        on:piece-place on:piece-hover on:piece-unhover
+    <rect
+        x=-0.5 y=-0.5 width="{n}" height="{n}" opacity=0
+        use:mousepos="{n}" on:piece-place on:piece-hover on:piece-unhover
     />
 </svg>
 
