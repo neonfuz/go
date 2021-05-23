@@ -30,6 +30,11 @@
     chalk "4.1.0"
     exit "0.1.2"
 
+"@iarna/toml@^2.2.5":
+  version "2.2.5"
+  resolved "https://registry.yarnpkg.com/@iarna/toml/-/toml-2.2.5.tgz#b32366c89b43c6f8cefbdefac778b9c828e3ba8c"
+  integrity sha512-trnsAYxU3xnS1gPHPyU961coFyLkh4gAD/0zQ5mymY4yOZ+CYvsPqUbOFSw0aDM4y0tV7tiFxL/1XfXPNC6IPg==
+
 "@rollup/pluginutils@^4.1.0":
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/@rollup/pluginutils/-/pluginutils-4.1.0.tgz#0dcc61c780e39257554feb7f77207dceca13c838"
@@ -37,6 +42,14 @@
   dependencies:
     estree-walker "^2.0.1"
     picomatch "^2.2.2"
+
+"@sveltejs/adapter-netlify@^1.0.0-next.14":
+  version "1.0.0-next.14"
+  resolved "https://registry.yarnpkg.com/@sveltejs/adapter-netlify/-/adapter-netlify-1.0.0-next.14.tgz#6b2f0adff0dd61a897b58c9c6ed3b3e353a6c797"
+  integrity sha512-TIyiFRYjEFYTKEQuht5Ln8HnzBRCVHUJwG5npigJjlVdwyuENXi9B/kO6gJ9I5/Hg49Fs7lc5crBlL6XHezAqw==
+  dependencies:
+    "@iarna/toml" "^2.2.5"
+    esbuild "^0.11.18"
 
 "@sveltejs/kit@next":
   version "1.0.0-next.109"
@@ -988,7 +1001,7 @@ es3ify@^0.2.2:
     jstransform "~11.0.0"
     through "~2.3.4"
 
-esbuild@^0.11.23:
+esbuild@^0.11.18, esbuild@^0.11.23:
   version "0.11.23"
   resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.11.23.tgz#c42534f632e165120671d64db67883634333b4b8"
   integrity sha512-iaiZZ9vUF5wJV8ob1tl+5aJTrwDczlvGP0JoMmnpC2B0ppiMCu8n8gmy5ZTGl5bcG081XBVn+U+jP+mPFm5T5Q==
