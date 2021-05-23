@@ -35,18 +35,22 @@
 
 <svg viewbox="0 0 {board} {board}" {...$$props}
      xmlns="http://www.w3.org/2000/svg" version="1.1">
-    {#each new Array(n) as _, i}
-        <path d="M 0 {i} H {board}"/>
-        <path d="M {i} 0 V {board}"/>
-    {/each}
-    {#each points as [x,y]}
-        <circle cx="{x}" cy="{y}" r=0.13 />
-    {/each}
-    <slot />
-    <rect
-        x=-0.5 y=-0.5 width="{n}" height="{n}" opacity=0
-        use:mousepos="{n}" on:piece-place on:piece-hover on:piece-unhover
-    />
+    <!-- Double nested svg to fix firefox "nonbug"
+      -- https://bugzilla.mozilla.org/show_bug.cgi?id=1344537 -->
+    <svg>
+        {#each new Array(n) as _, i}
+            <path d="M 0 {i} H {board}"/>
+            <path d="M {i} 0 V {board}"/>
+        {/each}
+        {#each points as [x,y]}
+            <circle cx="{x}" cy="{y}" r=0.13 />
+        {/each}
+        <slot />
+        <rect
+            x=-0.5 y=-0.5 width="{n}" height="{n}" opacity=0
+            use:mousepos="{n}" on:piece-place on:piece-hover on:piece-unhover
+        />
+    </svg>
 </svg>
 
 <style>
