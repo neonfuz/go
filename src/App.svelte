@@ -10,14 +10,4 @@
  :global(body) {
 	 overflow: hidden;
  }
- .container {
-	 display: flex;
-	 flex-direction: row;
-	 flex-wrap: wrap;
-	 overflow: hidden;
- }
- .container :global(svg) {
-     width: 100vmin;
-     height: 100vmin;
- }
 </style>

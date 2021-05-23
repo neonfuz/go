@@ -2,12 +2,11 @@
  import Board from './Board.svelte';
  import Piece from './Piece.svelte';
 
- export let n = 9, border = 10;
+ export let n = 9, border = 10, toggleTurns = true;;
  let turn = 'white';
  let hoverPos = null;
  let moves = [];
  let pieces = [];
- let toggleTurns = true;
 
  $: pieces = new Array(n).fill().map(() => new Array(n).fill(null));
  $: opponent = turn === 'white' ? 'black' : 'white';
@@ -77,15 +76,6 @@
         {/if}
     </Board>
 </svg>
-<label>
-    Toggle turns:
-    <input type="checkbox" bind:checked="{toggleTurns}" name="toggleTurns" />
-</label>
-<pre>
-{#each moves as move, i}
-    i: {JSON.stringify(move)}{'\n'}
-{/each}
-</pre>
 
 <style>
  svg {

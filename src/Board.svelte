@@ -58,4 +58,7 @@
      height: 100%;
      overflow: auto;
  }
+ rect {
+     touch-action: none;
+ }
 </style>
