@@ -10,24 +10,28 @@
  $: board = new Array(n).fill().map(() => new Array(n).fill(null));
  $: opponent = turn === 'white' ? 'black' : 'white';
 
- const getPiece = (x, y) => board[y] && board[y][x];
- // iterate over piece group
- function* overGroup(item) {
-     const start = item;
-     do {
-         yield item;
-         item = moves[item.next];
-     } while (item !== start);
+ // Main functionality
+ function piecePlace(e) {
+     const {x, y} = e.detail;
+     // check that spot is open
+     if (getSpot(x, y) === null) {
+         // construct move
+         let move = {turn, pos: {x, y}};
+         // place piece and set group pointer to self
+         board[y][x] = move.next = moves.push(move) - 1;
+         for (const spot of overNeighbors(move)) {
+             if (typeof spot !== 'number') continue;
+             const neighbor = moves[spot];
+             switch (neighbor.turn) {
+                 case turn: mergeGroup(move, neighbor); break;
+                 case opponent: removeIfDead(neighbor); break;
+                 default: alert('unreachable!'); break;
+             }
+         }
+         if (toggleTurns)
+             turn = opponent;
+     }
  }
- // iterate over piece neighbors
- function* overNeighbors(piece) {
-     const {pos: {x, y}} = piece;
-     yield getPiece(x-1, y);
-     yield getPiece(x+1, y);
-     yield getPiece(x, y-1);
-     yield getPiece(x, y+1);
- }
-
  function mergeGroup(a, b) {
      // make sure b is not already in a's group
      for (const item of overGroup(a))
@@ -50,30 +54,31 @@
      for (const {pos: {x, y}} of overGroup(target))
          board[y][x] = null;
  }
- function piecePlace(e) {
-     const {x, y} = e.detail;
-     // check that spot is open
-     if (getPiece(x, y) === null) {
-         // construct piece
-         let piece = {turn, pos: {x, y}};
-         // place piece and set group pointer to self
-         board[y][x] = piece.next = moves.push(piece) - 1;
-         for (let neighbor of overNeighbors(piece)) {
-             if (typeof neighbor !== 'number') continue;
-             neighbor = moves[neighbor];
-             switch (neighbor.turn) {
-                 case turn: mergeGroup(piece, neighbor); break;
-                 case opponent: removeIfDead(neighbor); break;
-                 default: alert('unreachable!'); break;
-             }
-         }
-         if (toggleTurns)
-             turn = opponent;
-     }
+
+ // Getters & Iterators
+ function getSpot(x, y) {
+     return board[y] && board[y][x];
  }
- let hoverPos = null;
- function pieceHover(e) { hoverPos = e.detail; }
- function pieceUnhover() { hoverPos = null; }
+ // iterate over piece group
+ function* overGroup(item) {
+     const start = item;
+     do {
+         yield item;
+         item = moves[item.next];
+     } while (item !== start);
+ }
+ // iterate over spot neighbors
+ function* overNeighbors(move) {
+     const {pos: {x, y}} = move;
+     yield getSpot(x-1, y);
+     yield getSpot(x+1, y);
+     yield getSpot(x, y-1);
+     yield getSpot(x, y+1);
+ }
+
+ let hover = null;
+ function pieceHover(e) { hover = e.detail; }
+ function pieceUnhover() { hover = null; }
 </script>
 
 <svg viewbox="0 0 {100+border*2} {100+border*2}" {...$$props}
@@ -81,8 +86,8 @@
     <Board
         {n} x={border} y={border} width=100 height=100
         on:piece-place="{piecePlace}"
-        on:piece-hover="{pieceHover}"
-        on:piece-unhover="{pieceUnhover}"
+        on:piece-hover="{e => hover = e.detail}"
+        on:piece-unhover="{() => hover = null}"
     >
         {#each board as row}
             {#each row as piece}
@@ -91,8 +96,8 @@
                 {/if}
             {/each}
         {/each}
-        {#if hoverPos}
-            <Piece opacity=0.5 pos={hoverPos} {turn} />
+        {#if hover}
+            <Piece opacity=0.5 pos={hover} {turn} />
         {/if}
     </Board>
 </svg>
