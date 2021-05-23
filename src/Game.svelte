@@ -54,7 +54,7 @@
  }
  function piecePlace(e) {
      const {x, y} = e.detail;
-     if (!pieces[y][x]) {
+     if (pieces[y] && pieces[y][x] === null) {
          let piece = {turn, pos: {x, y}};
          pieces[y][x] = piece.next = moves.push(piece) - 1;
          groupMerge(piece, x-1, y);

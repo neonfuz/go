@@ -7,7 +7,7 @@ export default function mousepos(node, n) {
     const getPos = e => {
         pt.x = e.clientX;
         pt.y = e.clientY;
-        const pos = pt.matrixTransform(svg.getScreenCTM().inverse())
+        const pos = pt.matrixTransform(svg.getScreenCTM().inverse());
         return {
             x: Math.floor(pos.x+0.5),
             y: Math.floor(pos.y+0.5),
