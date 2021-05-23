@@ -1,7 +1,7 @@
 <script>
  import mousepos from './mousepos.js';
  export let n = 19;
- $: board = (n-1);
+ $: size = (n-1);
  function getStarPoints(n) {
      const depth = n >= 13 ? 3 : 2;
      let points = [
@@ -29,14 +29,14 @@
  $: points = getStarPoints(n);
 </script>
 
-<svg viewbox="0 0 {board} {board}" {...$$props}
+<svg viewbox="0 0 {size} {size}" {...$$props}
      xmlns="http://www.w3.org/2000/svg" version="1.1">
     <!-- Double nested svg to fix firefox "nonbug"
       -- https://bugzilla.mozilla.org/show_bug.cgi?id=1344537 -->
     <svg>
         {#each new Array(n) as _, i}
-            <path d="M 0 {i} H {board}"/>
-            <path d="M {i} 0 V {board}"/>
+            <path d="M 0 {i} H {size}"/>
+            <path d="M {i} 0 V {size}"/>
         {/each}
         {#each points as [x,y]}
             <circle cx="{x}" cy="{y}" r=0.13 />

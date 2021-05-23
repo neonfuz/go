@@ -77,8 +77,6 @@
  }
 
  let hover = null;
- function pieceHover(e) { hover = e.detail; }
- function pieceUnhover() { hover = null; }
 </script>
 
 <svg viewbox="0 0 {100+border*2} {100+border*2}" {...$$props}
@@ -105,5 +103,6 @@
 <style>
  svg {
      background: #dcb35c;
+     touch-action: none;
  }
 </style>
