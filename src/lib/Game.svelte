@@ -2,12 +2,12 @@
  import Board from './Board.svelte';
  import Piece from './Piece.svelte';
 
- export let n = 9, border = 10, toggleTurns = true;
+ export let size = 9, border = 10, toggleTurns = true;
  let turn = 'white';
  let moves = [];
  let board = [];
 
- $: board = new Array(n).fill().map(() => new Array(n).fill(null));
+ $: board = new Array(size).fill().map(() => new Array(size).fill(null));
  $: opponent = turn === 'white' ? 'black' : 'white';
 
  // Main functionality
@@ -82,7 +82,7 @@
 <svg viewbox="0 0 {100+border*2} {100+border*2}" {...$$props}
      xmlns="http://www.w3.org/2000/svg" version="1.1">
     <Board
-        {n} x={border} y={border} width=100 height=100
+        {size} x={border} y={border} width=100 height=100
         on:piece-place="{piecePlace}"
         on:piece-hover="{e => hover = e.detail}"
         on:piece-unhover="{() => hover = null}"

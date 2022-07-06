@@ -1,6 +1,6 @@
 <script>
  import mousepos from './mousepos.js';
- export let n = 19;
+ export let size = 19;
  $: size = (n-1);
  function getStarPoints(n) {
      const depth = n >= 13 ? 3 : 2;
@@ -26,7 +26,7 @@
      }
      return points;
  }
- $: points = getStarPoints(n);
+ $: points = getStarPoints(size);
 </script>
 
 <svg viewbox="0 0 {size} {size}" {...$$props}
