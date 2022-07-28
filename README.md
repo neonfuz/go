@@ -1,5 +1,7 @@
 # GO game
 
+Hosted live [HERE](https://gowithfriends.netlify.app/play).
+
 This is a WIP version of the ancient board game called go (AKA igo, weiqi, baduk). You can read about the game [here](https://en.wikipedia.org/wiki/Go_(game)).
 
 It is implemented with svelte dynamically rendering the board to SVG.
