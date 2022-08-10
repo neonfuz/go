@@ -2,13 +2,14 @@
 
 Hosted live [HERE](https://gowithfriends.netlify.app/play).
 
-This is a WIP version of the ancient board game called go (AKA igo, weiqi, baduk). You can read about the game [here](https://en.wikipedia.org/wiki/Go_(game)).
+This is an online web version of the ancient board game called go (AKA igo, weiqi, baduk). You can read about the game [here](https://en.wikipedia.org/wiki/Go_(game)).
 
 It is implemented with svelte dynamically rendering the board to SVG.
 
-Currently the game rules are implemented, and it is playable with 2 players on a single machine. Future features include network play, and playing against the computer.
+Currently the game is fully playable with 2 players on a single machine. Network
+play and CPU matches are planned.
 
-![Screenshot 2022-07-28 at 14-59-37 Screenshot](https://user-images.githubusercontent.com/2590830/181627443-7a36f1cb-c693-422d-a13b-db97348c5853.png)
+![Screenshot](/docs/go-seigen-vs-miyamoto-naoki.png)
 
 ## Developing
 
@@ -28,10 +29,10 @@ pnpm run dev
 
 ## Building
 
-To create a production version of the app:
+To build the app for production
 
 ```bash
 npm run build
+# to preview the production build:
+npm run preview
 ```
-
-You can preview the production build with `npm run preview`.
