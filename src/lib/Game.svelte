@@ -3,7 +3,7 @@
  import Piece from './Piece.svelte';
 
  export let n = 9, border = 10, toggleTurns = true;
- let turn = 'white';
+ let turn = 'black';
  let moves = [];
  let board = [];
 
